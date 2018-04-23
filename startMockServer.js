@@ -1,5 +1,11 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var {
+  readJson,
+  writeJson,
+  writeAndReload
+}  = require('./fileReaderWriter')
+
 
 function setupExpress(){
   const app = express()
@@ -24,7 +30,13 @@ async function startMockServer(config) {
   var app = setupExpress();
   Object.keys(config.objects).forEach((key)=>{
     var prefix = '/'+key
-    config.objects[key].generate(app, prefix)
+    var crudAccess = config.objects[key] 
+    crudAccess.generate(app, prefix)
+    if(config.persistent){
+      crudAccess.setPersistenceProcessor((list) => {
+        return writeAndReload(crudAccess.normalizedFilePath,list)
+      })
+    }
   })
   runServer(app,config);
 }

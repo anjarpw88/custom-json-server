@@ -1,3 +1,13 @@
+var path = require('path'),
+    callsite = require('callsite')
+
+var {
+  readJson,
+  writeJson,
+  writeAndReload
+}  = require('./fileReaderWriter')
+
+
 var RequestType = {
   GET: 'GET',
   POST: 'POST',
@@ -16,11 +26,20 @@ function autoIncrementIdGenerator(initialValue) {
   }
 }
 
-function basicCrudAccess(initialList) {
-  var list = [...initialList]
-  var idGenerator = autoIncrementIdGenerator(0)
+function basicCrudAccess(filePath) {
+  var stack = callsite()
+  var callerDirectory = path.dirname(stack[1].getFileName())
+  var normalizedFilePath = path.join(callerDirectory, filePath)
+
+  var list = []
+  try{
+    list = readJson(normalizedFilePath)
+  }catch(e){
+  }
+  var idGenerator = autoIncrementIdGenerator(list.length)
   var identifyingFunc = (item) => item.id
   var assigningIdFunc = (item, id) => item.id = id
+  var persistentProcessorFunc = (unsavedList) => [...unsavedList]
   var customApiHandlers = []
   var createApiHandler = function (app, prefix, type, path, func) {
     console.log(type,'\t', prefix + path)
@@ -53,9 +72,21 @@ function basicCrudAccess(initialList) {
   }
   var withCustomRequest = function (type, path, func) {
     customApiHandlers.push((app, prefixPath) => {
-      createApiHandler(app, prefixPath, type, path, func)
+      var wrappedFunc = async (req,res) => {
+        var returnedInfo  = await func(req, [...list])
+        if(returnedInfo.list){
+          list = persistentProcessorFunc(returnedInfo.list)          
+        }
+        if(returnedInfo.responseAction) {
+          returnedInfo.responseAction(res)
+        }
+      }
+      createApiHandler(app, prefixPath, type, path, wrappedFunc)
     })
     return obj
+  }
+  var setPersistenceProcessor = function (func){
+    persistentProcessorFunc = func
   }
   var generate = function (app, prefixPath) {
     createApiHandler(app, prefixPath, RequestType.GET, '/:id', (req, res) => {
@@ -78,6 +109,7 @@ function basicCrudAccess(initialList) {
       var newItem = req.body
       assigningIdFunc(newItem, newId)
       list.push(newItem)
+      list = persistentProcessorFunc(list)
       res.json(newItem)
     })
 
@@ -91,6 +123,7 @@ function basicCrudAccess(initialList) {
       }
       var index = list.indexOf(item)
       list.splice(index, 1, newItem)
+      list = persistentProcessorFunc(list)
       res.json(newItem)
 
     })
@@ -103,6 +136,7 @@ function basicCrudAccess(initialList) {
       }
       var index = list.indexOf(item)
       list.splice(index, 1)
+      list = persistentProcessorFunc(list)
       res.json({})
     })
     customApiHandlers.forEach(func => {
@@ -112,6 +146,8 @@ function basicCrudAccess(initialList) {
   }
   var obj = {
     generate,
+    normalizedFilePath,
+    setPersistenceProcessor,
     createApiHandler,
     assigningIdBy,
     withCustomRequest,
