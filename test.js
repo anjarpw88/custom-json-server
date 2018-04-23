@@ -1,10 +1,10 @@
-var {startMockServer,BasicCrudAccessHelper } =  require('./index')
+var {startMockServer,basicCrudAccess,RequestType } =  require('./index')
 var config = {
  port: 8888,
  persistent: true,
  objects: {
-   users:BasicCrudAccessHelper.basicCrudAccess('./json/users.json')
-     .withCustomRequest(BasicCrudAccessHelper.RequestType.GET,'/gender/:gender',(req, list)=>{
+   users:basicCrudAccess('./json/users.json')
+     .withCustomRequest(RequestType.GET,'/gender/:gender',(req, list)=>{
        var gender = req.params.gender
        var genderList = list.filter((item)=>item.gender == gender)
        return {
@@ -15,7 +15,7 @@ var config = {
          }) 
        }
      })
-     .withCustomRequest(BasicCrudAccessHelper.RequestType.DELETE,'/byName/:name',(req, list)=>{
+     .withCustomRequest(RequestType.DELETE,'/byName/:name',(req, list)=>{
       var name = req.params.name
       var deletedPerson = list.filter((item)=>item.name == name)[0]
       list = list.filter((item)=>item.name != name)

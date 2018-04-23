@@ -1,5 +1,7 @@
 var path = require('path'),
-    callsite = require('callsite')
+    callsite = require('callsite'),
+    RequestType = require('./requestType'),
+    autoIncrementIdGenerator = require('./autoIncrementGenerator')
 
 var {
   readJson,
@@ -8,23 +10,7 @@ var {
 }  = require('./fileReaderWriter')
 
 
-var RequestType = {
-  GET: 'GET',
-  POST: 'POST',
-  PATCH: 'PATCH',
-  DELETE:  'DELETE',
-  PUT: 'PUT'
-}
 
-function autoIncrementIdGenerator(initialValue) {
-  initialValue = initialValue || 0
-  return {
-    generate() {
-      initialValue++
-      return initialValue
-    }
-  }
-}
 
 function basicCrudAccess(filePath) {
   var stack = callsite()
@@ -157,8 +143,5 @@ function basicCrudAccess(filePath) {
   return obj
 }
 
-module.exports = {
-  basicCrudAccess,
-  autoIncrementIdGenerator,
-  RequestType
-}
+module.exports = basicCrudAccess
+

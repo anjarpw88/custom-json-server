@@ -1,7 +1,10 @@
 var startMockServer = require('./startMockServer')
-var BasicCrudAccessHelper = require('./basicCrudAccessHelper')
-
+var basicCrudAccess = require('./basicCrudAccess')
+var RequestType = require('./requestType')
+var autoIncrementIdGenerator = require('./autoIncrementGenerator')
 module.exports = {
   startMockServer,
-  BasicCrudAccessHelper,
+  basicCrudAccess,
+  RequestType,
+  autoIncrementIdGenerator
 }
