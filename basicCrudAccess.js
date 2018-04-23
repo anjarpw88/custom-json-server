@@ -74,57 +74,82 @@ function basicCrudAccess(filePath) {
   var setPersistenceProcessor = function (func){
     persistentProcessorFunc = func
   }
+  var config = {
+    withGet:true,
+    withGetMany: true,
+    withPost: true,
+    withPatch: true,
+    withDelete: true
+  }
+
+  var configure =  (newConfig) => {
+    config = Object.assign(config, newConfig)
+    return obj
+  }
+
   var generate = function (app, prefixPath) {
-    createApiHandler(app, prefixPath, RequestType.GET, '/:id', (req, res) => {
-      var id = req.params.id
-      var returnedList = list.filter((item) => identifyingFunc(item) == id)[0]
-      if(!returnedList){
-        res.status(404).send({})
-        return        
-      }
-      res.json(returnedList)
-    })
-    createApiHandler(app, prefixPath, RequestType.GET, '', (req, res) => {
-      res.json({
-        count: list.length,
-        data: list
+    if(config.withGet){
+      createApiHandler(app, prefixPath, RequestType.GET, '/:id', (req, res) => {
+        var id = req.params.id
+        var returnedList = list.filter((item) => identifyingFunc(item) == id)[0]
+        if(!returnedList){
+          res.status(404).send({})
+          return        
+        }
+        res.json(returnedList)
+      })  
+    }
+    if(config.withGetMany){
+      createApiHandler(app, prefixPath, RequestType.GET, '', (req, res) => {
+        res.json({
+          count: list.length,
+          data: list
+        })
+      })  
+    }
+    if(config.withPost){
+      createApiHandler(app, prefixPath, RequestType.POST, '', (req, res) => {
+        var newId = idGenerator.generate()
+        var newItem = req.body
+        assigningIdFunc(newItem, newId)
+        list.push(newItem)
+        list = persistentProcessorFunc(list)
+        res.json(newItem)
+      })  
+    }
+    if(config.withPatch){
+      createApiHandler(app, prefixPath, RequestType.PATCH, '/:id', (req, res) => {
+        var id = req.params.id
+        var newItem = req.body
+        var item = list.filter((item) => identifyingFunc(item) == id)[0]
+        if (!item) {
+          res.status(404).send({})
+          return
+        }
+        var index = list.indexOf(item)
+        list.splice(index, 1, newItem)
+        list = persistentProcessorFunc(list)
+        res.json(newItem)
+  
       })
-    })
-    createApiHandler(app, prefixPath, RequestType.POST, '', (req, res) => {
-      var newId = idGenerator.generate()
-      var newItem = req.body
-      assigningIdFunc(newItem, newId)
-      list.push(newItem)
-      list = persistentProcessorFunc(list)
-      res.json(newItem)
-    })
+  
+    }
 
-    createApiHandler(app, prefixPath, RequestType.PATCH, '/:id', (req, res) => {
-      var id = req.params.id
-      var newItem = req.body
-      var item = list.filter((item) => identifyingFunc(item) == id)[0]
-      if (!item) {
-        res.status(404).send({})
-        return
-      }
-      var index = list.indexOf(item)
-      list.splice(index, 1, newItem)
-      list = persistentProcessorFunc(list)
-      res.json(newItem)
-
-    })
-    createApiHandler(app, prefixPath, RequestType.DELETE, '/:id', (req, res) => {
-      var id = req.params.id
-      var item = list.filter((item) => identifyingFunc(item) == id)[0]
-      if (!item) {
-        res.status(404).send({})
-        return
-      }
-      var index = list.indexOf(item)
-      list.splice(index, 1)
-      list = persistentProcessorFunc(list)
-      res.json({})
-    })
+    if(config.withDelete){
+      createApiHandler(app, prefixPath, RequestType.DELETE, '/:id', (req, res) => {
+        var id = req.params.id
+        var item = list.filter((item) => identifyingFunc(item) == id)[0]
+        if (!item) {
+          res.status(404).send({})
+          return
+        }
+        var index = list.indexOf(item)
+        list.splice(index, 1)
+        list = persistentProcessorFunc(list)
+        res.json({})
+      })
+  
+    }
     customApiHandlers.forEach(func => {
       func(app, prefixPath)
     })
@@ -132,6 +157,7 @@ function basicCrudAccess(filePath) {
   }
   var obj = {
     generate,
+    configure,
     normalizedFilePath,
     setPersistenceProcessor,
     createApiHandler,
