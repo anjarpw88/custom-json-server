@@ -1,0 +1,286 @@
+[
+  {
+    "id": "5add621ec70b2b64ac4464bf",
+    "pictureUrl": "http://via.placeholder.com/90x90",
+    "name": "Nama Lagi",
+    "categoryId": "5add621ede1df67d41bd53ca",
+    "warehouseId": "5add621efa7f52bf5bf6123a",
+    "type": "SIMPLE",
+    "attributes": [],
+    "variants": [
+      {
+        "attributes": [],
+        "id": "5add621e468b7ec4ab4a7042",
+        "sku": "1159eiusmod",
+        "price": 32180,
+        "stocks": 88,
+        "unitCost": 98576,
+        "minStocks": 10
+      }
+    ]
+  },
+  {
+    "id": "5add621ecf799adb7dfab707",
+    "pictureUrl": "http://via.placeholder.com/90x90",
+    "name": "mollit ex",
+    "categoryId": "5add621e509c8dc9f2823a9a",
+    "warehouseId": "5add621e317a868eb016da49",
+    "type": "SIMPLE",
+    "attributes": [],
+    "variants": [
+      {
+        "attributes": [],
+        "id": "5add621e4de476e6242f8bcc",
+        "sku": "6564non",
+        "price": 46888,
+        "stocks": 36,
+        "unitCost": 53778,
+        "minStocks": 10
+      }
+    ]
+  },
+  {
+    "id": "5add621efa118cdaffbe0062",
+    "pictureUrl": "http://via.placeholder.com/90x90",
+    "name": "dolor ipsum",
+    "categoryId": "5add621e63d4275f9721f783",
+    "warehouseId": "5add621e8a31f9984a9f5351",
+    "type": "SIMPLE",
+    "attributes": [],
+    "variants": [
+      {
+        "attributes": [],
+        "id": "5add621e826cba2573eeafd4",
+        "sku": "7759culpa",
+        "price": 33681,
+        "stocks": 75,
+        "unitCost": 88997,
+        "minStocks": 10
+      }
+    ]
+  },
+  {
+    "id": "5add621e3f1b26de2d0a9a74",
+    "pictureUrl": "http://via.placeholder.com/90x90",
+    "name": "magna cillum",
+    "categoryId": "5add621e7f695056c30a4be4",
+    "warehouseId": "5add621ef65b4d86744a2cd4",
+    "type": "SIMPLE",
+    "attributes": [],
+    "variants": [
+      {
+        "attributes": [],
+        "id": "5add621e2b28df8ef356f136",
+        "sku": "3718cillum",
+        "price": 43830,
+        "stocks": 62,
+        "unitCost": 81256,
+        "minStocks": 10
+      }
+    ]
+  },
+  {
+    "id": "5add629b8a5a4b0d5a0ea30f",
+    "pictureUrl": "aws.com/image001",
+    "name": "Kaos Polos",
+    "categoryId": "5add629be1077ab68649140e",
+    "warehouseId": "5add629b3a27f6e905a65108",
+    "type": "VARIABLE",
+    "attributes": [
+      {
+        "dimension": "laborum",
+        "values": [
+          "amet",
+          "tempor",
+          "enim"
+        ]
+      },
+      {
+        "dimension": "proident",
+        "values": [
+          "exercitation",
+          "excepteur",
+          "quis"
+        ]
+      },
+      {
+        "dimension": "est",
+        "values": [
+          "adipisicing",
+          "occaecat",
+          "elit"
+        ]
+      }
+    ],
+    "variants": [
+      {
+        "attributes": [
+          {
+            "dimension": "ea",
+            "value": "culpa"
+          },
+          {
+            "dimension": "nostrud",
+            "value": "non"
+          },
+          {
+            "dimension": "ullamco",
+            "value": "do"
+          }
+        ],
+        "id": "5add629b1f54d2dde149a48d",
+        "sku": "8575non",
+        "price": 35132,
+        "stocks": 19,
+        "unitCost": 57021,
+        "minStocks": 10
+      },
+      {
+        "attributes": [
+          {
+            "dimension": "ad",
+            "value": "elit"
+          },
+          {
+            "dimension": "excepteur",
+            "value": "quis"
+          },
+          {
+            "dimension": "commodo",
+            "value": "exercitation"
+          }
+        ],
+        "id": "5add629b19c392ccfe511d06",
+        "sku": "5695pariatur",
+        "price": 21121,
+        "stocks": 20,
+        "unitCost": 51901,
+        "minStocks": 10
+      },
+      {
+        "attributes": [
+          {
+            "dimension": "fugiat",
+            "value": "enim"
+          },
+          {
+            "dimension": "ad",
+            "value": "Lorem"
+          },
+          {
+            "dimension": "laborum",
+            "value": "non"
+          }
+        ],
+        "id": "5add629bb76fc44a8aed60c8",
+        "sku": "7678enim",
+        "price": 47432,
+        "stocks": 90,
+        "unitCost": 67404,
+        "minStocks": 10
+      }
+    ]
+  },
+  {
+    "id": "5add629bbe7239c268eb24e7",
+    "pictureUrl": "aws.com/image001",
+    "name": "Kaos Polos",
+    "categoryId": "5add629b3864245f89064b57",
+    "warehouseId": "5add629b8b02d6a0837447c4",
+    "type": "VARIABLE",
+    "attributes": [
+      {
+        "dimension": "eiusmod",
+        "values": [
+          "non",
+          "officia",
+          "consequat"
+        ]
+      },
+      {
+        "dimension": "fugiat",
+        "values": [
+          "veniam",
+          "eiusmod",
+          "in"
+        ]
+      },
+      {
+        "dimension": "et",
+        "values": [
+          "nostrud",
+          "nulla",
+          "consequat"
+        ]
+      }
+    ],
+    "variants": [
+      {
+        "attributes": [
+          {
+            "dimension": "consequat",
+            "value": "ex"
+          },
+          {
+            "dimension": "exercitation",
+            "value": "ad"
+          },
+          {
+            "dimension": "voluptate",
+            "value": "adipisicing"
+          }
+        ],
+        "id": "5add629b1a9c559f1f9e1cfa",
+        "sku": "4260sit",
+        "price": 19660,
+        "stocks": 55,
+        "unitCost": 72487,
+        "minStocks": 10
+      },
+      {
+        "attributes": [
+          {
+            "dimension": "ut",
+            "value": "veniam"
+          },
+          {
+            "dimension": "dolor",
+            "value": "eiusmod"
+          },
+          {
+            "dimension": "culpa",
+            "value": "officia"
+          }
+        ],
+        "id": "5add629bc3fe2847ba9ad674",
+        "sku": "3823sit",
+        "price": 38591,
+        "stocks": 22,
+        "unitCost": 69894,
+        "minStocks": 10
+      },
+      {
+        "attributes": [
+          {
+            "dimension": "duis",
+            "value": "voluptate"
+          },
+          {
+            "dimension": "dolore",
+            "value": "aliquip"
+          },
+          {
+            "dimension": "ex",
+            "value": "magna"
+          }
+        ],
+        "id": "5add629b5dd6b56843e9026f",
+        "sku": "3118occaecat",
+        "price": 41252,
+        "stocks": 88,
+        "unitCost": 96729,
+        "minStocks": 10
+      }
+    ]
+  }
+]
