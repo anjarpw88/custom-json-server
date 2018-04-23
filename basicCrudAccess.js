@@ -59,13 +59,13 @@ function basicCrudAccess(filePath) {
   var withCustomRequest = function (type, path, func) {
     customApiHandlers.push((app, prefixPath) => {
       var wrappedFunc = async (req,res) => {
-        var returnedInfo  = await func(req, [...list])
-        if(returnedInfo.list){
-          list = persistentProcessorFunc(returnedInfo.list)          
+        var tool = {
+          getList: () => [...list],
+          setList: (savedList) => {
+            list = persistentProcessorFunc(savedList)          
+          }
         }
-        if(returnedInfo.responseAction) {
-          returnedInfo.responseAction(res)
-        }
+        var returnedInfo  = await func(req, res, tool)
       }
       createApiHandler(app, prefixPath, type, path, wrappedFunc)
     })
