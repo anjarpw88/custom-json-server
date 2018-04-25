@@ -1,32 +1,22 @@
 var path = require('path'),
     callsite = require('callsite'),
-    RequestType = require('./requestType'),
-    autoIncrementIdGenerator = require('./autoIncrementGenerator')
-
-var {
-  readJson,
-  writeJson,
-  writeAndReload
-}  = require('./fileReaderWriter')
+    RequestType = require('./requestType')
 
 
-
-
-function basicCrudAccess(filePath) {
-  var stack = callsite()
-  var callerDirectory = path.dirname(stack[1].getFileName())
-  var normalizedFilePath = path.join(callerDirectory, filePath)
-
-  var list = []
-  try{
-    list = readJson(normalizedFilePath)
-  }catch(e){
-  }
-  var idGenerator = autoIncrementIdGenerator(list.length)
-  var identifyingFunc = (item) => item.id
-  var assigningIdFunc = (item, id) => item.id = id
-  var persistentProcessorFunc = (unsavedList) => [...unsavedList]
+function basicCrudAccess() {
+  var listManager = null
   var customApiHandlers = []
+  var config = {
+    withGet:true,
+    withGetMany: true,
+    withPost: true,
+    withPatch: true,
+    withDelete: true
+  }
+  var obj = {
+
+  }
+
   var createApiHandler = function (app, prefix, type, path, func) {
     console.log(type,'\t', prefix + path)
     switch (type) {
@@ -44,63 +34,43 @@ function basicCrudAccess(filePath) {
         break
     }
   }
-  var assigningIdBy = function (func) {
-    assigningIdFunc = func
+  var listManagedBy = function (manager) {
+    listManager = manager
     return obj
   }
-  var withIdGenerator = function (generator) {
-    idGenerator = generator
-    return obj
-  }
-  var identifiedBy = function (func) {
-    identifyingFunc = func
-    return obj
-  }
-  var withCustomRequest = function (type, path, func) {
+  
+  var withCustomRequest = function (type, path, func, rwTool) {
     customApiHandlers.push((app, prefixPath) => {
       var wrappedFunc = async (req,res) => {
-        var tool = {
-          getList: () => [...list],
-          setList: (savedList) => {
-            list = persistentProcessorFunc(savedList)          
-          }
-        }
-        var returnedInfo  = await func(req, res, tool)
+        rwTool = rwTool || listManager.getRwTool()
+        var returnedInfo  = await func(req, res, rwTool)
       }
       createApiHandler(app, prefixPath, type, path, wrappedFunc)
     })
     return obj
   }
-  var setPersistenceProcessor = function (func){
-    persistentProcessorFunc = func
-  }
-  var config = {
-    withGet:true,
-    withGetMany: true,
-    withPost: true,
-    withPatch: true,
-    withDelete: true
-  }
-
   var configure =  (newConfig) => {
     config = Object.assign(config, newConfig)
     return obj
   }
-
   var generate = function (app, prefixPath) {
+    if (!listManager) {
+      return
+    }
     if(config.withGet){
       createApiHandler(app, prefixPath, RequestType.GET, '/:id', (req, res) => {
         var id = req.params.id
-        var returnedList = list.filter((item) => identifyingFunc(item) == id)[0]
-        if(!returnedList){
+        var item = listManager.get(id)
+        if(!item){
           res.status(404).send({})
           return        
         }
-        res.json(returnedList)
+        res.json(item)
       })  
     }
     if(config.withGetMany){
       createApiHandler(app, prefixPath, RequestType.GET, '', (req, res) => {
+        var list = listManager.getMany()
         res.json({
           count: list.length,
           data: list
@@ -109,43 +79,33 @@ function basicCrudAccess(filePath) {
     }
     if(config.withPost){
       createApiHandler(app, prefixPath, RequestType.POST, '', (req, res) => {
-        var newId = idGenerator.generate()
         var newItem = req.body
-        assigningIdFunc(newItem, newId)
-        list.push(newItem)
-        list = persistentProcessorFunc(list)
-        res.json(newItem)
+        var savedItem = listManager.add(newItem)
+        res.json(savedItem)
       })  
     }
     if(config.withPatch){
       createApiHandler(app, prefixPath, RequestType.PATCH, '/:id', (req, res) => {
         var id = req.params.id
-        var newItem = req.body
-        var item = list.filter((item) => identifyingFunc(item) == id)[0]
-        if (!item) {
+        var item = req.body
+        listManager.assigningFunc(item, id)
+        var savedItem = listManager.modify(item)
+        if (!savedItem) {
           res.status(404).send({})
           return
         }
-        var index = list.indexOf(item)
-        list.splice(index, 1, newItem)
-        list = persistentProcessorFunc(list)
-        res.json(newItem)
-  
-      })
-  
+        res.json(savedItem)
+      })  
     }
 
     if(config.withDelete){
       createApiHandler(app, prefixPath, RequestType.DELETE, '/:id', (req, res) => {
-        var id = req.params.id
-        var item = list.filter((item) => identifyingFunc(item) == id)[0]
-        if (!item) {
+        var id = req.params.id        
+        var deletedItem = listManager.remove(id)
+        if (!deletedItem) {
           res.status(404).send({})
           return
         }
-        var index = list.indexOf(item)
-        list.splice(index, 1)
-        list = persistentProcessorFunc(list)
         res.json({})
       })
   
@@ -153,19 +113,20 @@ function basicCrudAccess(filePath) {
     customApiHandlers.forEach(func => {
       func(app, prefixPath)
     })
-    return obj
   }
-  var obj = {
-    generate,
-    configure,
-    normalizedFilePath,
-    setPersistenceProcessor,
-    createApiHandler,
-    assigningIdBy,
+
+  var getListManager = function (){
+    return listManager
+  }
+
+  Object.assign(obj, {
     withCustomRequest,
-    withIdGenerator,
-    identifiedBy
-  }
+    listManagedBy,
+    getListManager,
+    configure,
+    generate
+  })
+
   return obj
 }
 
