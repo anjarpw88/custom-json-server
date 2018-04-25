@@ -30,10 +30,7 @@ async function startMockServer(config) {
     var listManager = crudAccess.getListManager()
     if(listManager){
       if(config.persistent){
-        listManager.setRwTool({
-          read: () => fileReaderWriter.read(listManager.filePath),
-          write: (list) => fileReaderWriter.write(listManager.filePath, list)
-        })
+        listManager.setRwTool(fileReaderWriter.manageFile(listManager.filePath))
       }else {
         crudAccess.listManager.rwTool = {
           list: fileReaderWriter.read(listManager.filePath),

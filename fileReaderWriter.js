@@ -14,9 +14,15 @@ var writeAndReload = function(filePath, data){
   write(filePath, data)
   return read(filePath)
 }
-
+var manageFile = function(filePath) {
+  return {
+    read: () => read(filePath),
+    write: (list) => write(filePath, list)  
+  }
+}
 module.exports = {
   read,
   write,
-  writeAndReload
+  writeAndReload,
+  manageFile
 }
