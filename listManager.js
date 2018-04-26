@@ -9,8 +9,8 @@ var listManager = function(filePath){
 
   
   var rwTool = null
-  var identifyingFunc = (item) => item.id
-  var assigningFunc = (item, id) => item.id = id 
+  var identifyingFunc = (item) => item.id.toString + ''
+  var assigningFunc = (item, id) => item.id = parseInt(id) 
   var generatingNextIdFunc = (list, newItem) => {
     if(list){
       var max = list.reduce((max, item) => item.id > max? item.id: max, 0)
