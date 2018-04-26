@@ -9,7 +9,7 @@ var listManager = function(filePath){
 
   
   var rwTool = null
-  var identifyingFunc = (item) => item.id.toString + ''
+  var identifyingFunc = (item) => item.id.toString() + ''
   var assigningFunc = (item, id) => item.id = parseInt(id) 
   var generatingNextIdFunc = (list, newItem) => {
     if(list){
